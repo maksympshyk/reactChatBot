@@ -1,0 +1,48 @@
+.consolidation-table-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.table-animation {
+  overflow: hidden;
+  position: absolute;
+  animation: revealTable 2s ease-out forwards;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes revealTable {
+  0% {
+    left: 0px;
+    top: 0px;
+  }
+  25% {
+    left: 0px;
+    top: 25%;
+  }
+  50% {
+    left: 0px;
+    top: 50%;
+  }
+  100% {
+    left: 0px;
+    top: 102%;
+  }
+}
+
+.consolidation-table-container table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.consolidation-table-container th,
+.consolidation-table-container td {
+  border-right: 1px solid #e5e7eb;
+}
+
+.consolidation-table-container th:last-child,
+.consolidation-table-container td:last-child {
+  border-right: none;
+} 
