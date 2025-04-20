@@ -12,6 +12,12 @@ type MessageType = {
   isTree?: boolean;
   isTable?: boolean;
   isCitation?: boolean;
+  chartData?: any;
+  treeData?: any;
+  listData?: any;
+  tableData?: any;
+  isText?: boolean;
+  isMap?: boolean;
 };
 
 type ChatWindowProps = {
@@ -21,7 +27,7 @@ type ChatWindowProps = {
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages,
-  onCitationLinkClick,
+  onCitationLinkClick
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,7 +52,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   return (
     <div
       ref={containerRef}
-      className="chat-window-container flex flex-col p-10 space-y-4 overflow-hidden h-[calc(100vh-200px)]"
+      className="chat-window-container flex flex-col p-10 space-y-4 h-[calc(100vh-200px)]"
     >
       <div className="flex flex-col space-y-4 h-[100px]"></div>
       <TransitionGroup className="flex flex-col space-y-4">
@@ -66,7 +72,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               isTree={msg.isTree}
               isTable={msg.isTable}
               isCitation={msg.isCitation}
+              chartData={msg.chartData}
+              treeData={msg.treeData}
+              listData={msg.listData}
+              tableData={msg.tableData}
+              isText={msg.isText}
               onCitationLinkClick={onCitationLinkClick}
+              isMap={msg.isMap}
             />
           </CSSTransition>
         ))}

@@ -9,7 +9,7 @@ interface ImageModalProps {
 const ImageModal: React.FC<ImageModalProps> = ({
   isOpen,
   onClose,
-  imagePath,
+  imagePath
 }) => {
   if (!isOpen) return null;
 

@@ -5,6 +5,7 @@ import Modal from "./powerModal";
 import TreeDivisionDiagram from "./Tree";
 import ConsolidationTable from "./ConsolidationTable";
 import CitationCard from "./CitationCard";
+import Map from "./Map";
 
 type MessageProps = {
   text: string;
@@ -15,7 +16,13 @@ type MessageProps = {
   isTree?: boolean;
   isTable?: boolean;
   isCitation?: boolean;
+  chartData?: any;
+  treeData?: any;
+  listData?: any;
+  tableData?: any;
+  isText?: boolean;
   onCitationLinkClick?: () => void;
+  isMap?: boolean;
 };
 
 const Message: React.FC<MessageProps> = ({
@@ -27,8 +34,15 @@ const Message: React.FC<MessageProps> = ({
   isTree,
   isTable,
   isCitation,
+  chartData,
+  treeData,
+  listData,
+  tableData,
+  isText,
   onCitationLinkClick,
+  isMap
 }) => {
+  console.log(text);
   return (
     <div
       className={`py-1 px-2 my-2 max-w-1/2  ${
@@ -37,12 +51,17 @@ const Message: React.FC<MessageProps> = ({
           : "bg-white rounded-full"
       }`}
     >
-      <div className="flex flex-col px-3 py-1 justify-center w-1/2" >
-        {isChart ? <VerticalBarChart /> : <p>{text}</p>}
-        {isList ? <SynergyMetrics metrics={[]} /> : null}
+      <div className="flex flex-col px-3 py-1 justify-center w-1/2">
+        {<p>{text}</p>}
+
+        {isChart && (
+          <VerticalBarChart data={chartData.data} options={chartData.options} />
+        )}
+        {isList ? <SynergyMetrics items={listData} /> : null}
+
         {isTree && <TreeDivisionDiagram />}
         {isModal && <Modal imageUrl="/Group3.png" title="Synergy Graph" />}
-        {isTable && <ConsolidationTable />}
+        {isTable && <ConsolidationTable data={tableData} />}
         {isCitation && (
           <CitationCard
             citationText="The source for the value of equity"
@@ -54,6 +73,7 @@ const Message: React.FC<MessageProps> = ({
             onLinkClick={onCitationLinkClick}
           />
         )}
+        {isMap && <Map imageUrl="/MapLeft.png" title="Detail Map" />}
       </div>
     </div>
   );

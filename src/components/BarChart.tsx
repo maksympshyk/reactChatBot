@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  BarChart,
+  BarChart as RechartsBarChart,
   Bar,
   XAxis,
   YAxis,
@@ -10,27 +10,30 @@ import {
   ReferenceLine,
 } from "recharts";
 
-const data = [
-  { name: "Hitachi / Global Logic", value: 37.4 },
-  { name: "Atos / Data Respons", value: 19.1 },
-  { name: "Adecco / Akka", value: 14.7 },
-  { name: "Capgem. Altran", value: 8.3 },
-  { name: "Alten / Xelia", value: 12.3 },
-  { name: "Alten / Accent", value: 10.6 },
-  { name: "Cognizant / Devicon", value: 9.8 },
-  { name: "KKR / Ness", value: 8.3 },
-];
-
-const VerticalBarChart = () => {
-  // Calculate middle value from the data
-  const calculateMiddleValue = (data: { value: number }[]) => {
-    const values = data.map((item) => item.value);
-    const sortedValues = [...values].sort((a, b) => a - b);
-    const middleIndex = Math.floor(sortedValues.length / 2);
-    return sortedValues[middleIndex];
+interface BarChartProps {
+  data: {
+    labels: string[];
+    datasets: Array<{
+      label: string;
+      data: number[];
+    }>;
   };
+  options?: {
+    title?: {
+      display: boolean;
+      text: string;
+    };
+    baseline?: number;
+  };
+}
 
-  const middleValue = calculateMiddleValue(data);
+const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
+  // Transform the data into the format expected by Recharts
+
+  const chartData = data.labels.map((label, index) => ({
+    name: label,
+    value: data.datasets[0].data[index],
+  }));
 
   const renderCustomizedLabel = (props: any) => {
     const { x, y, payload, width } = props;
@@ -87,7 +90,7 @@ const VerticalBarChart = () => {
           dominantBaseline="top"
           style={{ fontSize: "12px" }}
         >
-          {`${value}x`}
+          {`${value}%`}
         </text>
       </g>
     );
@@ -95,9 +98,14 @@ const VerticalBarChart = () => {
 
   return (
     <div style={{ height: 350 }}>
+      {options?.title?.display && (
+        <h3 style={{ textAlign: "center", marginBottom: "20px" }}>
+          {options.title.text}
+        </h3>
+      )}
       <ResponsiveContainer>
-        <BarChart
-          data={data}
+        <RechartsBarChart
+          data={chartData}
           margin={{ top: 20, right: 0, left: 0, bottom: 80 }}
           barGap={0}
           maxBarSize={100}
@@ -119,8 +127,10 @@ const VerticalBarChart = () => {
             barSize={100}
             label={renderValueLabel}
           />
-          <ReferenceLine y={middleValue} stroke="#000000" />
-        </BarChart>
+          {options?.baseline !== undefined && (
+            <ReferenceLine y={options.baseline} stroke="#000000" />
+          )}
+        </RechartsBarChart>
       </ResponsiveContainer>
     </div>
   );
