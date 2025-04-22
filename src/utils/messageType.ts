@@ -31,7 +31,7 @@ export const determineMessageType = async (
           tableData: item
         };
       }
-      if (item.type === "synergeTable") {
+      if (item.type === "synergyTable") {
         result = {
           ...result,
           isList: true,
