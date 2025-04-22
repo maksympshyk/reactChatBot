@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Tree.css"; // Import the CSS file for styling
 
 interface TreeNode {
@@ -12,6 +12,10 @@ interface TreeNodeProps {
   isRoot?: boolean;
 }
 
+interface TreeDivisionDiagramProps {
+  data: any;
+}
+
 const Node: React.FC<TreeNodeProps> = ({ node, isRoot = false }) => {
   const isLeaf = !node.children || node.children.length === 0;
 
@@ -22,7 +26,7 @@ const Node: React.FC<TreeNodeProps> = ({ node, isRoot = false }) => {
           isLeaf ? "leaf-node" : ""
         }`}
       >
-        {node.label}
+        {node.id}
       </div>
       {node.children && node.children.length > 0 && (
         <div className="children-container">
@@ -57,46 +61,19 @@ const Node: React.FC<TreeNodeProps> = ({ node, isRoot = false }) => {
   );
 };
 
-const TreeDivisionDiagram: React.FC = () => {
-  const treedata = {
-    nodes: {
-      id: "root",
-      label: "12.8x",
-      children: [
-        {
-          id: "node1",
-          label: "5,000",
-          children: [
-            {
-              id: "node1-1",
-              label: "3,600",
-              children: [
-                { id: "node1-1-1", label: "1,200" },
-                { id: "node1-1-2", label: "2,400" }
-              ]
-            },
-            { id: "node1-2", label: "1,400" },
-            { id: "node1-3", label: "1,534" }
-          ]
-        },
-        {
-          id: "node2",
-          label: "392",
-          children: [
-            { id: "node2-1", label: "178" },
-            { id: "node2-2", label: "123" },
-            { id: "node2-1", label: "178" },
-            { id: "node2-2", label: "123" }
-          ]
-        }
-      ]
+const TreeDivisionDiagram: React.FC<TreeDivisionDiagramProps> = ({ data }) => {
+  const [treedata, setTreedata] = useState<any>([]);
+
+  useEffect(() => {
+    if (data) {
+      setTreedata(data);
     }
-  };
+  }, [data]);
 
   return (
     <div className="tree-diagram">
       <div className="tree-animation w-full h-full z-10"></div>
-      <Node node={treedata.nodes} isRoot={true} />
+      <Node node={treedata} isRoot={true} />
     </div>
   );
 };

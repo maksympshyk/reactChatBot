@@ -22,7 +22,9 @@ export type MessageType = {
   chartData?: any;
   treeData?: any;
   listData?: any;
+  imageData?: any;
   tableData?: any;
+  mapData?: any;
   isMap?: boolean;
 };
 
@@ -32,6 +34,7 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isCardModalOpen, setIsCardModalOpen] = useState<boolean>(false);
   const [isMapModalOpen, setIsMapModalOpen] = useState<boolean>(false);
+  const [mapData, setMapData] = useState<any>({});
   const handleModalClose = () => {
     setIsModalOpen(false);
     const modalMessage: MessageType = {
@@ -57,14 +60,21 @@ const App: React.FC = () => {
   const handleCitationLinkClick = () => {
     setIsCardModalOpen(true);
   };
+
   const handleSendMessage = async (message: string) => {
     const userMessage: MessageType = {
       text: message,
       sender: "user",
       isText: true
     };
+    let gptMessage: MessageType = {
+      text: "",
+      sender: "gpt"
+    };
     setMessages([...messages, userMessage]);
-    const messageType = determineMessageType(message);
+
+    const messageType = await determineMessageType(message);
+
     if (messageType.isText) {
       const gptMessage: MessageType = {
         text: "adds 25 new local markets (16M consumers)",
@@ -76,13 +86,11 @@ const App: React.FC = () => {
     }
     // Check if user typed "card"
     if (messageType.isCitation) {
-      const gptMessage: MessageType = {
-        text: "",
-        sender: "gpt",
-        isCitation: true
+      gptMessage = {
+        ...gptMessage,
+        isCitation: true,
+        imageData: messageType.imageData
       };
-      setMessages((prevMessages) => [...prevMessages, gptMessage]);
-      return;
     }
 
     // Check if user typed "modal"
@@ -93,56 +101,41 @@ const App: React.FC = () => {
 
     // Check if user typed "table"
     if (messageType.isTable) {
-      const gptMessage: MessageType = {
-        text: "",
-        sender: "gpt",
+      gptMessage = {
+        ...gptMessage,
         isTable: true,
         tableData: messageType.tableData
       };
-      setMessages((prevMessages) => [...prevMessages, gptMessage]);
-      return;
     }
 
     // Check if user asked for a chart
     if (messageType.isChart) {
-      const gptMessage: MessageType = {
-        text: "",
-        sender: "gpt",
+      gptMessage = {
+        ...gptMessage,
         isChart: true,
         chartData: messageType.chartData
       };
-      setMessages((prevMessages) => [...prevMessages, gptMessage]);
-      return;
     }
     if (messageType.isList) {
-      const gptMessage: MessageType = {
-        text: "",
-        sender: "gpt",
+      gptMessage = {
+        ...gptMessage,
         isList: true,
         listData: messageType.listData
       };
-      setMessages((prevMessages) => [...prevMessages, gptMessage]);
-      return;
     }
     if (messageType.isTree) {
-      const gptMessage: MessageType = {
-        text: "",
-        sender: "gpt",
-        isTree: true
+      gptMessage = {
+        ...gptMessage,
+        isTree: true,
+        treeData: messageType.treeData
       };
-      setMessages((prevMessages) => [...prevMessages, gptMessage]);
-      return;
     }
     if (messageType.isMap) {
-      const gptMessage: MessageType = {
-        text: "",
-        sender: "gpt",
-        isMap: true
-      };
+      setMapData(messageType.mapData);
       setIsMapModalOpen(true);
-      // setMessages((prevMessages) => [...prevMessages, gptMessage]);
-      return;
     }
+    setMessages((prevMessages) => [...prevMessages, gptMessage]);
+    return;
   };
 
   return (
@@ -174,7 +167,11 @@ const App: React.FC = () => {
           onClose={handleCardModalClose}
           imagePath="/Group3.png"
         />
-        <MapModal isOpen={isMapModalOpen} onClose={handleMapModalClose} />
+        <MapModal
+          isOpen={isMapModalOpen}
+          onClose={handleMapModalClose}
+          data={mapData}
+        />
       </div>
     </div>
   );

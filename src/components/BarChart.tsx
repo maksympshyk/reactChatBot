@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   BarChart as RechartsBarChart,
   Bar,
@@ -7,7 +7,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
-  ReferenceLine,
+  ReferenceLine
 } from "recharts";
 
 interface BarChartProps {
@@ -29,11 +29,18 @@ interface BarChartProps {
 
 const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
   // Transform the data into the format expected by Recharts
-
-  const chartData = data.labels.map((label, index) => ({
-    name: label,
-    value: data.datasets[0].data[index],
-  }));
+  const [chartData, setChartData] = useState<any[]>([]);
+  useEffect(() => {
+    if (data.labels) {
+      setChartData(
+        data.labels?.map((label, index) => ({
+          name: label,
+          value: data.datasets[0].data[index]
+        }))
+      );
+    }
+    console.log(chartData);
+  }, [data]);
 
   const renderCustomizedLabel = (props: any) => {
     const { x, y, payload, width } = props;
@@ -66,7 +73,7 @@ const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
               textAlign: "center",
               fontSize: "12px",
               color: "#666",
-              wordBreak: "break-word",
+              wordBreak: "break-word"
             }}
           >
             {lines.map((line, index) => (

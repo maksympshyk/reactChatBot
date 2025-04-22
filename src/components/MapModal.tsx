@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Tree.css"; // Import the CSS file for styling
@@ -6,43 +6,50 @@ import "./Tree.css"; // Import the CSS file for styling
 interface MapModalProps {
   isOpen: boolean;
   onClose: () => void;
+  data: any;
   // imagePath: string;
 }
 
-const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
+const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose, data }) => {
+  // const [mapData, setMapData] = useState<any>({}});
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstance = useRef<L.Map | null>(null);
 
-  const mapdata = {
-    type: "map",
-    markers: [
-      { lat: 48.14, lng: 11.58, label: "Buyer branch", color: "blue" },
-      { lat: 49.21, lng: 11.62, label: "Target branch", color: "red" },
-      { lat: 47.21, lng: 11.82, label: "Target branch1", color: "blue" },
-      { lat: 45.21, lng: 12.42, label: "Target branch2", color: "red" },
-      { lat: 46.21, lng: 13.62, label: "Target branch3", color: "blue" },
-      { lat: 45.71, lng: 11.62, label: "Target branch4", color: "red" }
-    ],
-    options: {
-      zoom: 6,
-      tileProvider: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    }
-  };
+  // useEffect(() => {
+  //   setMapData(data);
+  // }, [data]);
+
+  // const data = {
+  //   type: "map",
+  //   markers: [
+  //     { lat: 48.14, lng: 11.58, label: "Buyer branch", color: "blue" },
+  //     { lat: 49.21, lng: 11.62, label: "Target branch", color: "red" },
+  //     { lat: 47.21, lng: 11.82, label: "Target branch1", color: "blue" },
+  //     { lat: 45.21, lng: 12.42, label: "Target branch2", color: "red" },
+  //     { lat: 46.21, lng: 13.62, label: "Target branch3", color: "blue" },
+  //     { lat: 45.71, lng: 11.62, label: "Target branch4", color: "red" }
+  //   ],
+  //   options: {
+  //     zoom: 6,
+  //     tileProvider: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  //   }
+  // };
 
   useEffect(() => {
+    console.log(data);
     if (mapRef.current && !mapInstance.current) {
       mapInstance.current = L.map(mapRef.current, {
         zoomControl: false,
         attributionControl: false // Disabled the Leaflet icon in the bottom-right corner
-      }).setView([48.14, 11.58], mapdata.options.zoom);
+      }).setView([48.14, 11.58], data.options.zoom);
 
-      L.tileLayer(mapdata.options.tileProvider, {
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "" // Removed the attribution text
       }).addTo(mapInstance.current);
 
       L.control.zoom({ position: "topright" }).remove();
 
-      mapdata.markers.forEach((marker) => {
+      data.markers.forEach((marker: any) => {
         const circle = L.circleMarker([marker.lat, marker.lng], {
           color: marker.color,
           fillColor: marker.color,
@@ -60,7 +67,7 @@ const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
         mapInstance.current = null;
       }
     };
-  }, [mapdata]);
+  }, [data]);
 
   if (!isOpen) return null;
 
@@ -124,31 +131,6 @@ const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
               </svg>
             </button>
           </div>
-          {/* <div className="w-full flex justify-center items-center my-2">
-          <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded-full shadow-md hover:bg-gray-200">
-              <span className="text-sm">Close</span>
-            </button>
-            <div className="border-l border-gray-300 h-6"></div>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded-full shadow-md hover:bg-gray-200">
-              <span className="text-sm">Download</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-4 h-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 16.5v-9m0 9l-3-3m3 3l3-3m6 6.75H6a2.25 2.25 0 01-2.25-2.25V6A2.25 2.25 0 016 3.75h12A2.25 2.25 0 0120.25 6v12a2.25 2.25 0 01-2.25 2.25z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div> */}
         </div>
       </div>{" "}
     </div>

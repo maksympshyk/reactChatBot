@@ -18,6 +18,7 @@ type MessageProps = {
   isCitation?: boolean;
   chartData?: any;
   treeData?: any;
+  imageData?: any;
   listData?: any;
   tableData?: any;
   isText?: boolean;
@@ -36,11 +37,12 @@ const Message: React.FC<MessageProps> = ({
   isCitation,
   chartData,
   treeData,
+  imageData,
   listData,
   tableData,
   isText,
   onCitationLinkClick,
-  isMap,
+  isMap
 }) => {
   console.log(text);
   return (
@@ -61,11 +63,12 @@ const Message: React.FC<MessageProps> = ({
         )}
         {isList ? <SynergyMetrics items={listData} /> : null}
 
-        {isTree && <TreeDivisionDiagram />}
+        {isTree && <TreeDivisionDiagram data={treeData} />}
         {isModal && <Modal imageUrl="/Group3.png" title="Synergy Graph" />}
         {isTable && <ConsolidationTable data={tableData} />}
         {isCitation && (
           <CitationCard
+            data={imageData}
             citationText="The source for the value of equity"
             value="3,600"
             pageNumber={5}
