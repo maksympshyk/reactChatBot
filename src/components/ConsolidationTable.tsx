@@ -12,7 +12,7 @@ interface ConsolidationTableProps {
 
 const ConsolidationTable: React.FC<ConsolidationTableProps> = ({ data }) => {
   return (
-    <div className="consolidation-table-container">
+    <div className="consolidation-table-container my-3">
       <div className="table-animation"></div>
       <div
         className="rounded-lg overflow-hidden bg-white shadow border border-gray-200"
