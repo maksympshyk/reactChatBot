@@ -24,6 +24,7 @@ export type MessageType = {
   listData?: any;
   imageData?: any;
   tableData?: any;
+  textData?: any;
   mapData?: any;
   isMap?: boolean;
 };
@@ -75,15 +76,15 @@ const App: React.FC = () => {
 
     const messageType = await determineMessageType(message);
 
-    if (messageType.isText) {
-      const gptMessage: MessageType = {
-        text: "adds 25 new local markets (16M consumers)",
-        sender: "gpt",
-        isText: true
-      };
-      setMessages((prevMessages) => [...prevMessages, gptMessage]);
-      return;
-    }
+    // if (messageType.isText) {
+    //   const gptMessage: MessageType = {
+    //     text: "adds 25 new local markets (16M consumers)",
+    //     sender: "gpt",
+    //     isText: true
+    //   };
+    //   setMessages((prevMessages) => [...prevMessages, gptMessage]);
+    //   return;
+    // }
     // Check if user typed "card"
     if (messageType.isCitation) {
       gptMessage = {
@@ -92,7 +93,13 @@ const App: React.FC = () => {
         imageData: messageType.imageData
       };
     }
-
+    if (messageType.isText) {
+      gptMessage = {
+        ...gptMessage,
+        isText: true,
+        textData: messageType.textData || ""
+      };
+    }
     // Check if user typed "modal"
     if (messageType.isModal) {
       setIsModalOpen(true);

@@ -13,7 +13,7 @@ type SynergyMetricsProps = {
 
 const SynergyMetrics: React.FC<SynergyMetricsProps> = ({ items }) => {
   return (
-    <div className="bg-white my-3 rounded-lg shadow-sm max-w-2xl synergy-metrics-container">
+    <div className="bg-white rounded-lg shadow-sm max-w-2xl synergy-metrics-container">
       <div className="metrics-animation w-full h-full z-10"></div>
       <div className="space-y-4 border border-gray-200 rounded-lg">
         {items.map((item, index) => (

@@ -24,6 +24,13 @@ export const determineMessageType = async (
           treeData: item.nodes
         };
       }
+      if (item.type === "text") {
+        result = {
+          ...result,
+          isText: true,
+          textData: item.text
+        };
+      }
       if (item.type === "table") {
         result = {
           ...result,

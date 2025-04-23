@@ -17,6 +17,7 @@ type MessageType = {
   listData?: any;
   imageData?: any;
   tableData?: any;
+  textData?: any;
   isText?: boolean;
   isMap?: boolean;
 };
@@ -76,6 +77,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               chartData={msg.chartData}
               treeData={msg.treeData}
               imageData={msg.imageData}
+              textData={msg.textData}
               listData={msg.listData}
               tableData={msg.tableData}
               isText={msg.isText}

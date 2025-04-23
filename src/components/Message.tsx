@@ -21,6 +21,7 @@ type MessageProps = {
   imageData?: any;
   listData?: any;
   tableData?: any;
+  textData?: any;
   isText?: boolean;
   onCitationLinkClick?: () => void;
   isMap?: boolean;
@@ -41,6 +42,7 @@ const Message: React.FC<MessageProps> = ({
   listData,
   tableData,
   isText,
+  textData,
   onCitationLinkClick,
   isMap
 }) => {
@@ -57,10 +59,11 @@ const Message: React.FC<MessageProps> = ({
         <p className="text-[18px] font-[400]">{text}</p>
       </div>
 
-      <div className="flex flex-col px-3 py-1 justify-center w-1/2">
+      <div className="flex flex-col px-3 py-1 justify-center w-1/2 gap-4">
         {isChart && (
           <VerticalBarChart data={chartData.data} options={chartData.options} />
         )}
+        {isText && <div className="text-black">{textData}</div>}
         {isList ? <SynergyMetrics items={listData} /> : null}
 
         {isTree && <TreeDivisionDiagram data={treeData} />}
