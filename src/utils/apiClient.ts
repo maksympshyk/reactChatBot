@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://chat-cib-backend.synergy-impact.de/chat";
+// const BASE_URL = "https://chat-cib-backend.synergy-impact.de/chat";
+const BASE_URL = "https://chat-cib-backend.synergy-impact.de/chat_old"
 const BEARER_TOKEN = "Bearer Bearer cloud-ib-chat";
 
 interface ApiResponse {
