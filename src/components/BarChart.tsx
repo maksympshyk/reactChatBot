@@ -27,6 +27,28 @@ interface BarChartProps {
   };
 }
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        }}
+      >
+        <p style={{ margin: "0 0 5px 0", color: "#666" }}>{label}</p>
+        <p style={{ margin: 0, color: "#00A3E0", fontWeight: "bold" }}>
+          {`${payload[0].value}%`}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
   // Transform the data into the format expected by Recharts
   const [chartData, setChartData] = useState<any[]>([]);
@@ -68,23 +90,25 @@ const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
 
     return (
       <g transform={`translate(${x},${y})`}>
-        <foreignObject x={-30} y={-5} width={60} height={90}>
+        <foreignObject x={-40} y={-5} width={80} height={90}>
           <div
             style={{
               width: "100%",
               height: "100%",
               display: "flex",
               flexDirection: "column",
-              alignItems: "left",
-              justifyContent: "left",
-              textAlign: "left",
-              fontSize: "14px",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              fontSize: "12px",
               color: "#666",
               wordBreak: "break-all",
               lineHeight: "1.3",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              transform: "rotate(-90deg)",
+              transformOrigin: "center center",
             }}
           >
             {lines.map((line, index) => (
@@ -135,19 +159,19 @@ const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
       <ResponsiveContainer>
         <RechartsBarChart
           data={chartData}
-          margin={{ top: 20, right: 0, left: 0, bottom: 80 }}
+          margin={{ top: 20, right: 0, left: 0, bottom: 100 }}
           barGap={0}
           maxBarSize={100}
         >
           <XAxis
             dataKey="name"
             tick={renderCustomizedLabel}
-            height={60}
+            height={100}
             interval={0}
             axisLine={false}
             tickLine={false}
           />
-
+          <Tooltip content={<CustomTooltip />} />
           <Bar
             dataKey="value"
             fill="#00A3E0"

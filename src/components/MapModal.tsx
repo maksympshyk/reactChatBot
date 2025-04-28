@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Tree.css"; // Import the CSS file for styling
-import html2canvas from "html2canvas";
 import domtoimage from "dom-to-image-more";
-import countryGeoJson from './countries.geo.json'; // Download and place a GeoJSON file in your project
+import countryGeoJson from "./countries.geo.json"; // Download and place a GeoJSON file in your project
 
 interface MapModalProps {
   isOpen: boolean;
@@ -18,12 +17,15 @@ interface FeatureCollection {
 }
 
 const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose, data }) => {
-  // const [mapData, setMapData] = useState<any>({}});
+  const [mapData, setMapData] = useState<any>({});
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstance = useRef<L.Map | null>(null);
 
   // Place this inside your component, but outside useEffect
-  function getCountryColor(countryName: string, countryMarkerCounts: Record<string, { red: number; blue: number }>) {
+  function getCountryColor(
+    countryName: string,
+    countryMarkerCounts: Record<string, any>
+  ) {
     const counts = countryMarkerCounts[countryName];
     if (!counts) return "#fff";
     const total = counts.red + counts.blue;
@@ -48,50 +50,56 @@ const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose, data }) => {
 
       L.control.zoom({ position: "topright" }).remove();
 
+      // --- Highlight countries logic update ---
+      if (data.legend && Array.isArray(data.legend.highlighted_countries)) {
+        const highlightMap: Record<string, string> = {};
+        data.legend.highlighted_countries.forEach(
+          ([countryCode, color]: [string, string]) => {
+            highlightMap[countryCode] = color;
+          }
+        );
+
+        L.geoJSON(countryGeoJson as any, {
+          style: (feature) => {
+            const countryCode = feature?.properties["ISO3166-1-Alpha-2"];
+            if (highlightMap[countryCode]) {
+              return {
+                color: "#888",
+                weight: 1,
+                fillColor: highlightMap[countryCode],
+                fillOpacity: 0.9
+              };
+            }
+            return {
+              color: "#888",
+              weight: 1,
+              fillColor: "#fff",
+              fillOpacity: 0.1
+            };
+          }
+        }).addTo(mapInstance.current);
+      } else {
+        L.geoJSON(countryGeoJson as any, {
+          style: () => ({
+            color: "#888",
+            weight: 1,
+            fillColor: "#fff",
+            fillOpacity: 0.1
+          })
+        }).addTo(mapInstance.current);
+      }
+
+      // --- Add markers AFTER polygons so they appear on top ---
       data.markers.forEach((marker: any) => {
         const circle = L.circleMarker([marker.lat, marker.lng], {
           color: marker.color,
           fillColor: marker.color,
           fillOpacity: 0.8,
-          radius: 4
+          radius: 2
         }).addTo(mapInstance.current!);
 
         circle.bindPopup(marker.label);
       });
-
-      // 1. Count red and blue markers per country
-      const countryMarkerCounts: Record<string, { red: number; blue: number }> = {};
-
-      const features = (countryGeoJson as any).features;
-      features.forEach((feature: any) => {
-        const countryLayer = L.geoJSON(feature);
-        const countryName = feature.properties.name;
-        countryMarkerCounts[countryName] = { red: 0, blue: 0 };
-
-        data.markers.forEach((marker: any) => {
-          const latlng = L.latLng(marker.lat, marker.lng);
-          if (countryLayer.getBounds().contains(latlng)) {
-            if (marker.color === "red" || marker.color === "#ff0000") {
-              countryMarkerCounts[countryName].red += 1;
-            } else if (marker.color === "blue" || marker.color === "#0000ff") {
-              countryMarkerCounts[countryName].blue += 1;
-            }
-          }
-        });
-      });
-
-      // 3. Add highlighted countries with proportional color
-      L.geoJSON(countryGeoJson as any, {
-        style: (feature) => {
-          const countryName = feature?.properties?.name;
-          return {
-            color: "#888",
-            weight: 1,
-            fillColor: getCountryColor(countryName, countryMarkerCounts),
-            fillOpacity: 0.4,
-          };
-        },
-      }).addTo(mapInstance.current);
     }
 
     return () => {
@@ -144,25 +152,27 @@ const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose, data }) => {
           ref={mapRef}
           className="w-full h-[500px] rounded-[60px] shadow-md"
         ></div>
+
         <div className="absolute bottom-0 left-0 right-0 bg-white py-4 flex flex-col items-center rounded-b-[40px]">
-          {/* <div className="w-full flex flex-col">
-            <div className="w-full h-4 bg-gradient-to-r from-red-500 to-green-500 rounded-full relative">
-              <div
-                className={`absolute left-[70%] top-0 w-4 h-4 bg-white border border-gray-300 rounded-full shadow-md`}
-                // style={{
-                //   left: `${data.legend.slider.percent * 100}%`
-                // }}
-              ></div>
-            </div>
-            <div className="flex justify-between gap-4">
-              <div className="text-[#ef4444]">Low</div>
-              <div className="text-center">
-                Distribution reach increase based on locations (consumers, %)
-                110%
+          {data.legend && data.legend.slider && (
+            <div className="w-full flex flex-col">
+              <div className="w-full h-4 bg-gradient-to-r from-red-500 to-green-500 rounded-full relative">
+                <div
+                  className={`absolute top-0 w-4 h-4 bg-white border border-gray-300 rounded-full shadow-md`}
+                  style={{
+                    left: `${data.legend.slider.percent}%`
+                  }}
+                ></div>
               </div>
-              <div className="text-[#22c55e]">High</div>
+              <div className="flex justify-between gap-4">
+                <div className="text-[#ef4444]">Low</div>
+                <div className="text-center">
+                  {data.legend.slider.text} {data.legend.slider.percent + "%"}
+                </div>
+                <div className="text-[#22c55e]">High</div>
+              </div>
             </div>
-          </div> */}
+          )}
           <div className="w-full flex justify-center items-center my-2">
             <div className="flex items-center space-x-4">
               {data.legend.items.map((item: any) => (
