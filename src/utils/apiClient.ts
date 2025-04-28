@@ -23,7 +23,8 @@ export const apiCall = async (
         Authorization: BEARER_TOKEN,
         "Content-Type": "application/json"
       },
-      data: data
+      data: data,
+      timeout: 120000
     });
 
     return response.data;

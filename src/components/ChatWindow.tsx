@@ -20,16 +20,19 @@ type MessageType = {
   textData?: any;
   isText?: boolean;
   isMap?: boolean;
+  mapData?: any;
 };
 
 type ChatWindowProps = {
   messages: MessageType[];
   onCitationLinkClick: () => void;
+  handleMapModalOpen: () => void;
 };
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages,
-  onCitationLinkClick
+  onCitationLinkClick,
+  handleMapModalOpen
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -83,6 +86,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               isText={msg.isText}
               onCitationLinkClick={onCitationLinkClick}
               isMap={msg.isMap}
+              mapData={msg.mapData}
+              handleMapModalOpen={handleMapModalOpen}
             />
           </CSSTransition>
         ))}

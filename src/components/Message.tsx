@@ -25,6 +25,8 @@ type MessageProps = {
   isText?: boolean;
   onCitationLinkClick?: () => void;
   isMap?: boolean;
+  mapData?: any;
+  handleMapModalOpen?: () => void;
 };
 
 const Message: React.FC<MessageProps> = ({
@@ -44,7 +46,9 @@ const Message: React.FC<MessageProps> = ({
   isText,
   textData,
   onCitationLinkClick,
-  isMap
+  isMap,
+  mapData,
+  handleMapModalOpen
 }) => {
   console.log(text);
   return (
@@ -59,7 +63,7 @@ const Message: React.FC<MessageProps> = ({
         <p className="text-[18px] font-[400]">{text}</p>
       </div>
 
-      <div className="flex flex-col px-3 py-1 justify-center w-1/2 gap-4">
+      <div className="flex flex-col px-3 py-1 justify-center w-2/3 gap-4">
         {isChart && (
           <VerticalBarChart data={chartData.data} options={chartData.options} />
         )}
@@ -81,7 +85,14 @@ const Message: React.FC<MessageProps> = ({
             onLinkClick={onCitationLinkClick}
           />
         )}
-        {isMap && <Map imageUrl="/MapLeft.png" title="Detail Map" />}
+        {isMap && (
+          <Map
+            imageUrl="/MapLeft.png"
+            title="Detail Map"
+            mapData={mapData}
+            handleMapModalOpen={handleMapModalOpen}
+          />
+        )}
       </div>
     </div>
   );

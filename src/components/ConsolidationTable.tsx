@@ -15,16 +15,16 @@ const ConsolidationTable: React.FC<ConsolidationTableProps> = ({ data }) => {
     <div className="consolidation-table-container">
       <div className="table-animation"></div>
       <div
-        className="rounded-lg overflow-hidden bg-white shadow border border-gray-200"
+        className="rounded-lg overflow-hidden bg-white shadow border border-[rgba(194,194,194,1)]"
         style={{ borderRadius: "20px" }}
       >
         <table className="w-full">
-          <thead className="bg-gray-50">
+          <thead className="bg-[rgba(240,240,240,1)]">
             <tr>
               {data.columns.map((column, index) => (
                 <th
                   key={index}
-                  className="px-6 py-3 text-left text-sm font-medium text-gray-700 text-center"
+                  className="px-6 py-3 text-left text-base font-medium text-gray-700 text-center"
                 >
                   {column}
                 </th>
@@ -37,7 +37,9 @@ const ConsolidationTable: React.FC<ConsolidationTableProps> = ({ data }) => {
                 {row.map((cell, cellIndex) => (
                   <td
                     key={cellIndex}
-                    className="px-6 py-4 text-sm text-gray-700 text-center"
+                    className={`px-6 py-4 text-base text-gray-700/50 ${
+                      cellIndex === 0 ? "text-left" : "text-center"
+                    }`}
                   >
                     {cell}
                   </td>

@@ -51,12 +51,20 @@ const App: React.FC = () => {
   };
   const handleMapModalClose = () => {
     setIsMapModalOpen(false);
-    const modalMessage: MessageType = {
-      text: "",
-      sender: "gpt",
-      isMap: true
-    };
-    setMessages((prevMessages) => [...prevMessages, modalMessage]);
+    console.log(messages);
+    if (!messages[messages.length - 1].isMap) {
+      const modalMessage: MessageType = {
+        text: "",
+        sender: "gpt",
+        isMap: true,
+        mapData: mapData
+      };
+      setMessages((prevMessages) => [...prevMessages, modalMessage]);
+    }
+  };
+  const handleMapModalOpen = () => {
+    setMapData(JSON.parse(localStorage.getItem("mapData") || "{}"));
+    setIsMapModalOpen(true);
   };
   const handleCitationLinkClick = () => {
     setIsCardModalOpen(true);
@@ -138,7 +146,11 @@ const App: React.FC = () => {
       };
     }
     if (messageType.isMap) {
+      gptMessage = {
+        ...gptMessage
+      };
       setMapData(messageType.mapData);
+      localStorage.setItem("mapData", JSON.stringify(messageType.mapData));
       setIsMapModalOpen(true);
     }
     setMessages((prevMessages) => [...prevMessages, gptMessage]);
@@ -155,6 +167,7 @@ const App: React.FC = () => {
           <ChatWindow
             messages={messages}
             onCitationLinkClick={handleCitationLinkClick}
+            handleMapModalOpen={handleMapModalOpen}
           />
         </div>
         {loading && (

@@ -7,7 +7,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
-  ReferenceLine
+  ReferenceLine,
 } from "recharts";
 
 interface BarChartProps {
@@ -35,14 +35,21 @@ const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
       setChartData(
         data.labels?.map((label, index) => ({
           name: label,
-          value: data.datasets[0].data[index]
+          value: data.datasets[0].data[index],
         }))
       );
     }
     console.log(chartData);
   }, [data]);
 
-  const renderCustomizedLabel = (props: any) => {
+  const renderCustomizedLabel = (props: {
+    x: number;
+    y: number;
+    payload: {
+      value: string;
+    };
+    width: number;
+  }) => {
     const { x, y, payload, width } = props;
     const words = payload.value.split(" ");
     const lines: string[] = [];
@@ -50,7 +57,7 @@ const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
 
     words.forEach((word: string) => {
       currentLine.push(word);
-      if (currentLine.length === 2) {
+      if (currentLine.length === 1) {
         lines.push(currentLine.join(" "));
         currentLine = [];
       }
@@ -61,23 +68,38 @@ const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
 
     return (
       <g transform={`translate(${x},${y})`}>
-        <foreignObject x={-width / 2} y={0} width={width} height={60}>
+        <foreignObject x={-30} y={-5} width={60} height={90}>
           <div
             style={{
               width: "100%",
               height: "100%",
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              fontSize: "12px",
+              alignItems: "left",
+              justifyContent: "left",
+              textAlign: "left",
+              fontSize: "14px",
               color: "#666",
-              wordBreak: "break-word"
+              wordBreak: "break-all",
+              lineHeight: "1.3",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {lines.map((line, index) => (
-              <div key={index}>{line}</div>
+              <div
+                key={index}
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  width: "100%",
+                  color: "rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                {line}
+              </div>
             ))}
           </div>
         </foreignObject>
@@ -91,11 +113,11 @@ const VerticalBarChart: React.FC<BarChartProps> = ({ data, options }) => {
       <g transform={`translate(${x},${y})`}>
         <text
           x={0}
-          y={-5}
+          y={-3}
           fill="#00A3E0"
           textAnchor="start"
           dominantBaseline="top"
-          style={{ fontSize: "12px" }}
+          style={{ fontSize: "14px" }}
         >
           {`${value}%`}
         </text>
